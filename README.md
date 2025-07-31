@@ -18,7 +18,7 @@ solve_ivp_bdf = "0.1"
 Then, you can use it in your Rust project:
 
 ```rust
-use solve_ivp_bdf::{solve_ivp, Event};
+use solve_ivp_bdf::{solve_ivp_bdf, Event};
 
 fn main() {
     let rhs = Box::new(|t: f64, y: &[f64]| -> Vec<f64> {
@@ -37,7 +37,7 @@ fn main() {
     let t1 = 10.0;
     let y0 = vec![10.0];
 
-    let result = solve_ivp(rhs, t0, t1, y0, Some(vec![event]));
+    let result = solve_ivp_bdf(rhs, t0, t1, y0, Some(vec![event]));
     println!("{:?}", result);
 }
 ```
