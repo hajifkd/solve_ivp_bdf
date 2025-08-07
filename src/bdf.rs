@@ -5,8 +5,8 @@ use crate::IntegratorError;
 use nalgebra::DMatrix;
 use anyhow::Result;
 
-pub struct BdfSolver {
-    pub fun: Box<dyn Fn(f64, &[f64]) -> Vec<f64>>,
+pub struct BdfSolver<T: Fn(f64, &[f64]) -> Vec<f64>> {
+    pub fun: T,
     pub t: f64,
     pub y: Vec<f64>,
     pub t_bound: f64,
@@ -33,9 +33,9 @@ pub struct BdfSolver {
     pub n_equal_steps: usize,
 }
 
-impl BdfSolver {
+impl<'a, T: Fn(f64, &[f64]) -> Vec<f64> + 'a> BdfSolver<T> {
     pub fn new(
-        fun: Box<dyn Fn(f64, &[f64]) -> Vec<f64>>,
+        fun: T,
         t0: f64,
         y0: Vec<f64>,
         t_bound: f64,
@@ -58,7 +58,7 @@ impl BdfSolver {
         let h_abs = if let Some(first_step) = first_step {
             validate_first_step(first_step, t0, t_bound)
         } else {
-            select_initial_step(&*fun, t0, &y0, t_bound, max_step, &f0, direction, 1, rtol, atol)
+            select_initial_step(&fun, t0, &y0, t_bound, max_step, &f0, direction, 1, rtol, atol)
         };
         
         let newton_tol = (10.0 * EPS / rtol).max((0.03_f64).min(rtol.sqrt()));
@@ -176,7 +176,7 @@ impl BdfSolver {
                     self.nfev += 1;
                     
                     if self.j.is_none() || !current_jac {
-                        self.j = Some(num_jac(&*self.fun, t_new, &y_predict, &f_val, self.atol));
+                        self.j = Some(num_jac(&self.fun, t_new, &y_predict, &f_val, self.atol));
                         self.njev += 1;
                         current_jac = true;
                     }

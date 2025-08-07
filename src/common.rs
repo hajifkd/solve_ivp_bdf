@@ -47,7 +47,7 @@ pub fn validate_first_step(first_step: f64, t0: f64, t_bound: f64) -> f64 {
 }
 
 pub fn select_initial_step(
-    fun: &dyn Fn(f64, &[f64]) -> Vec<f64>,
+    fun: impl Fn(f64, &[f64]) -> Vec<f64>,
     t0: f64,
     y0: &[f64],
     t_bound: f64,
@@ -141,7 +141,7 @@ pub fn change_d(d: &mut [Vec<f64>], order: usize, factor: f64) {
 }
 
 pub fn num_jac(
-    fun: &dyn Fn(f64, &[f64]) -> Vec<f64>,
+    fun: impl Fn(f64, &[f64]) -> Vec<f64>,
     t: f64,
     y: &[f64],
     f: &[f64],

@@ -56,7 +56,6 @@ pub enum SolveResult {
     },
 }
 
-pub type RhsFunction = Box<dyn Fn(f64, &[f64]) -> Vec<f64>>;
 pub type EventFunction = Box<dyn Fn(f64, &[f64]) -> bool>;
 
 pub struct Event {
@@ -87,7 +86,7 @@ impl Default for SolveIvpOptions {
 }
 
 pub fn solve_ivp_bdf(
-    fun: RhsFunction,
+    fun: impl Fn(f64, &[f64]) -> Vec<f64>,
     t0: f64,
     t1: f64,
     y0: Vec<f64>,
